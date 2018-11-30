@@ -14,11 +14,12 @@ import Overlay from './overlay/Overlay';
 
 // Utilities
 import SearchBar from './searchbar/SearchBar';
-import Badge from './badge/badge';
+import Badge from './badge/Badge';
 import CheckBox from './checkbox/CheckBox';
 import Divider from './divider/Divider';
 import Slider from './slider/Slider';
 import ButtonGroup from './buttons/ButtonGroup';
+import Image from './image/Image';
 
 // Productivity
 import Card from './card/Card';
@@ -31,7 +32,7 @@ import Tooltip from './tooltip/Tooltip';
 
 // helpers
 import Text from './text/Text';
-import colors from './config/colors';
+import { colors, ThemeProvider, ThemeConsumer, withTheme } from './config';
 import getIconType, { registerCustomIconType } from './helpers/getIconType';
 import normalize from './helpers/normalizeText';
 
@@ -60,4 +61,8 @@ export {
   Rating,
   Header,
   Overlay,
+  ThemeProvider,
+  ThemeConsumer,
+  withTheme,
+  Image,
 };

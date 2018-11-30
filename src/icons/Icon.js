@@ -1,5 +1,5 @@
-import PropTypes from 'prop-types';
 import React from 'react';
+import PropTypes from 'prop-types';
 import {
   Platform,
   TouchableHighlight,
@@ -7,8 +7,9 @@ import {
   StyleSheet,
   Text as NativeText,
 } from 'react-native';
+
 import getIconType from '../helpers/getIconType';
-import ViewPropTypes from '../config/ViewPropTypes';
+import { ViewPropTypes, withTheme } from '../config';
 
 const Icon = props => {
   const {
@@ -22,18 +23,21 @@ const Icon = props => {
     raised,
     containerStyle,
     reverseColor,
+    disabled,
+    disabledStyle,
     onPress,
-    component: Component = onPress ? TouchableHighlight : View,
+    Component = onPress ? TouchableHighlight : View,
     ...attributes
   } = props;
 
-  let Icon = getIconType(type || 'material');
+  let Icon = getIconType(type);
+
   return (
     <View style={containerStyle && containerStyle}>
       <Component
         {...attributes}
         underlayColor={reverse ? color : underlayColor || color}
-        style={[
+        style={StyleSheet.flatten([
           (reverse || raised) && styles.button,
           (reverse || raised) && {
             borderRadius: size + 4,
@@ -46,11 +50,18 @@ const Icon = props => {
             alignItems: 'center',
             justifyContent: 'center',
           },
-        ]}
+          disabled && styles.disabled,
+          disabled && disabledStyle,
+        ])}
+        {...onPress && { disabled }}
         onPress={onPress}
       >
         <Icon
-          style={[{ backgroundColor: 'transparent' }, iconStyle && iconStyle]}
+          testID="iconIcon"
+          style={StyleSheet.flatten([
+            { backgroundColor: 'transparent' },
+            iconStyle && iconStyle,
+          ])}
           size={size}
           name={name}
           color={reverse ? reverseColor : color}
@@ -65,7 +76,7 @@ Icon.propTypes = {
   name: PropTypes.string,
   size: PropTypes.number,
   color: PropTypes.string,
-  component: PropTypes.func,
+  Component: PropTypes.func,
   underlayColor: PropTypes.string,
   reverse: PropTypes.bool,
   raised: PropTypes.bool,
@@ -73,6 +84,8 @@ Icon.propTypes = {
   iconStyle: NativeText.propTypes.style,
   onPress: PropTypes.func,
   reverseColor: PropTypes.string,
+  disabled: PropTypes.bool,
+  disabledStyle: ViewPropTypes.style,
 };
 
 Icon.defaultProps = {
@@ -82,6 +95,8 @@ Icon.defaultProps = {
   size: 24,
   color: 'black',
   reverseColor: 'white',
+  disabled: false,
+  type: 'material',
 };
 
 const styles = StyleSheet.create({
@@ -90,17 +105,21 @@ const styles = StyleSheet.create({
   },
   raised: {
     ...Platform.select({
-      ios: {
+      android: {
+        elevation: 2,
+      },
+      default: {
         shadowColor: 'rgba(0,0,0, .4)',
         shadowOffset: { height: 1, width: 1 },
         shadowOpacity: 1,
         shadowRadius: 1,
       },
-      android: {
-        elevation: 2,
-      },
     }),
+  },
+  disabled: {
+    backgroundColor: '#D1D5D8',
   },
 });
 
-export default Icon;
+export { Icon };
+export default withTheme(Icon, 'Icon');
